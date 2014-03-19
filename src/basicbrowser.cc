@@ -197,14 +197,18 @@ void BasicBrowser::loadFinished(bool okay) {
 
 
 void BasicBrowser::download(const QNetworkRequest &r) {
-	cout << "Request to download " << r.url().toString().toStdString() << endl;
+	cout << "Request to download " << qPrintable(r.url().toString()) << endl;
 	stop();
 	emit downloadRequested(r.url());
+	//XXX
+	//new Download(r.url(), "./");
 }
 
 
 void BasicBrowser::unsupportedContent(QNetworkReply *r) {
-	cout << "Request to download " << r->url().toString().toStdString() << endl;
+	cout << "Request to download " << qPrintable(r->url().toString()) << endl;
 	stop();
 	emit downloadRequested(r->url());
+	//XXX
+	//new Download(r->url(), "./");
 }
