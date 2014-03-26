@@ -1,12 +1,13 @@
 #include "basicbrowser.hh"
 #include "addressbar.hh"
-#include "imagebutton.hh"
 #include "linebutton.hh"
 #include "backicon.hh"
 #include "fwdicon.hh"
 #include "goicon.hh"
 #include "stopicon.hh"
 #include "refreshicon.hh"
+#include "downloadsbutton.hh"
+#include "downloadmanager.hh"
 
 #include <QWebView>
 #include <QUrl>
@@ -31,14 +32,14 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
   : QMainWindow(parent)
 {
 	// Create the buttons.
-
 	m_backBtn = new LineButton(new BackIcon(35));
 	m_forwardBtn = new LineButton(new FwdIcon(35));
 	m_goBtn = new LineButton(new GoIcon(35));
 	m_stopBtn = new LineButton(new StopIcon(35));
 	m_refreshBtn = new LineButton(new RefreshIcon(35));
-
+	m_downloadsBtn = new DownloadsButton(35);
 	m_addressBar = new AddressBar;
+	m_downloadManager = new DownloadManager();
 	m_webView = new QWebView;
 
 	// The address bar needs a bit of tweaking ...
@@ -61,7 +62,8 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
 	m_barLayout->addWidget(m_stopBtn, 0, Qt::AlignVCenter);
 	m_barLayout->addSpacing(5);
 	m_barLayout->addWidget(m_refreshBtn, 0, Qt::AlignRight|Qt::AlignVCenter);
-
+	addBarButton(m_downloadsBtn);
+	
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	mainLayout->setContentsMargins(0,0,0,0);
 	mainLayout->setSpacing(0);
@@ -74,27 +76,32 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
 
 	// Connect things together.
 	connect(m_webView, SIGNAL(loadStarted()),
-			this, SLOT(loadStarted()));
+		this, SLOT(loadStarted()));
 	connect(m_webView, SIGNAL(loadProgress(int)),
-			this, SLOT(loadProgress(int)));
+		this, SLOT(loadProgress(int)));
 	connect(m_webView, SIGNAL(loadFinished(bool)),
-			this, SLOT(loadFinished(bool)));
+		this, SLOT(loadFinished(bool)));
 	connect(m_backBtn, SIGNAL(clicked()),
-			m_webView, SLOT(back()));
+		m_webView, SLOT(back()));
 	connect(m_forwardBtn, SIGNAL(clicked()),
-			m_webView, SLOT(forward()));
+		m_webView, SLOT(forward()));
 	connect(m_goBtn, SIGNAL(clicked()),
-			this, SLOT(go()));
+		this, SLOT(go()));
 	connect(m_stopBtn, SIGNAL(clicked()),
-			this, SLOT(stop()));
+		this, SLOT(stop()));
 	connect(m_refreshBtn, SIGNAL(clicked()),
-			this, SLOT(refresh()));
+		this, SLOT(refresh()));
 	connect(m_addressBar, SIGNAL(returnPressed()),
-			this, SLOT(go()));
+		this, SLOT(go()));
 	connect(m_webView->page(), SIGNAL(downloadRequested(QNetworkRequest)),
-			this, SLOT(download(QNetworkRequest)));
+		this, SLOT(download(QNetworkRequest)));
 	connect(m_webView->page(), SIGNAL(unsupportedContent(QNetworkReply*)),
-			this, SLOT(unsupportedContent(QNetworkReply*)));
+		this, SLOT(unsupportedContent(QNetworkReply*)));
+	connect(this, SIGNAL(downloadRequested(QUrl)),
+		m_downloadManager, SLOT(downloadRequested(QUrl)));
+	connect(m_downloadsBtn, SIGNAL(clicked()),
+		m_downloadManager, SLOT(show()));
+	//XXX add connection from downloadManager to downloadsbtn.progress()
 
 	// Start loading the default page.
 	m_webView->load(QUrl(startPage));
@@ -165,7 +172,7 @@ void BasicBrowser::loadStarted() {
 void BasicBrowser::loadProgress(int progress) {
    setWindowTitle(m_webView->title() + " - " + NAME);
    if (progress >= 25)
-	   m_addressBar->setText(m_webView->url().toString());
+      m_addressBar->setText(m_webView->url().toString());
    m_addressBar->setProgress(progress);
 
    LineButton *backBtn = static_cast<LineButton*>(m_backBtn);
@@ -226,8 +233,6 @@ void BasicBrowser::download(const QNetworkRequest &r) {
 	cout << "Request to download " << qPrintable(r.url().toString()) << endl;
 	stop();
 	emit downloadRequested(r.url());
-	//XXX
-	//new Download(r.url(), "./");
 }
 
 
@@ -235,6 +240,4 @@ void BasicBrowser::unsupportedContent(QNetworkReply *r) {
 	cout << "Request to download " << qPrintable(r->url().toString()) << endl;
 	stop();
 	emit downloadRequested(r->url());
-	//XXX
-	//new Download(r->url(), "./");
 }

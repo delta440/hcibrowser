@@ -27,12 +27,12 @@ Download::Download(const QUrl &url, QString saveDir, QObject *parent)
 		m_filename += QString::number(i);
 	}
 
-	m_output.setFileName(saveDir + "/" + m_filename);
+	m_output.setFileName(saveDir);// + "/" + m_filename);
 	// Open the output file. If we can't, then throw an exception.
 	if (!m_output.open(QIODevice::WriteOnly)) {
-		cerr << "Couldn't open " << qPrintable(saveDir + "/" + m_filename)
-			 << " - " << qPrintable(m_output.errorString());
-		throw runtime_error(qPrintable(m_output.errorString()));
+	   cerr << "Couldn't open " << qPrintable(saveDir) // + "/" + m_filename)
+		<< " - " << qPrintable(m_output.errorString());
+	   throw runtime_error(qPrintable(m_output.errorString()));
 	}
 
 	// Create the network request.
