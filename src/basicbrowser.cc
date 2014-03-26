@@ -1,6 +1,13 @@
 #include "basicbrowser.hh"
 #include "addressbar.hh"
 #include "imagebutton.hh"
+#include "linebutton.hh"
+#include "backicon.hh"
+#include "fwdicon.hh"
+#include "goicon.hh"
+#include "stopicon.hh"
+#include "refreshicon.hh"
+
 #include <QWebView>
 #include <QUrl>
 #include <QHBoxLayout>
@@ -11,6 +18,7 @@
 #include <QBitmap>
 #include <QPixmap>
 #include <QNetworkReply>
+#include <QWebHistory>
 #include <iostream>
 #include <cctype>
 using namespace std;
@@ -24,21 +32,12 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
 {
 	// Create the buttons.
 
-	m_backBtn = new ImageButton(
-				"resources/back.png", "resources/back_h.png",
-				"resources/back_p.png");
-	m_forwardBtn = new ImageButton(
-				"resources/forward.png", "resources/forward_h.png",
-				"resources/forward_p.png");
-	m_goBtn = new ImageButton(
-				"resources/go.png", "resources/go_h.png",
-				"resources/go_p.png");
-	m_stopBtn = new ImageButton(
-				"resources/stop.png", "resources/stop_h.png",
-				"resources/stop_p.png");
-	m_refreshBtn = new ImageButton(
-				"resources/reload.png", "resources/reload_h.png",
-				"resources/reload_p.png");
+	m_backBtn = new LineButton(new BackIcon(35));
+	m_forwardBtn = new LineButton(new FwdIcon(35));
+	m_goBtn = new LineButton(new GoIcon(35));
+	m_stopBtn = new LineButton(new StopIcon(35));
+	m_refreshBtn = new LineButton(new RefreshIcon(35));
+
 	m_addressBar = new AddressBar;
 	m_webView = new QWebView;
 
@@ -89,7 +88,7 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
 	connect(m_stopBtn, SIGNAL(clicked()),
 			this, SLOT(stop()));
 	connect(m_refreshBtn, SIGNAL(clicked()),
-			m_webView, SLOT(reload()));
+			this, SLOT(refresh()));
 	connect(m_addressBar, SIGNAL(returnPressed()),
 			this, SLOT(go()));
 	connect(m_webView->page(), SIGNAL(downloadRequested(QNetworkRequest)),
@@ -141,12 +140,25 @@ void BasicBrowser::stop() {
 }
 
 
+void BasicBrowser::refresh() {
+	stop();
+	go();
+}
+
+
 void BasicBrowser::loadStarted() {
    //setWindowTitle("Loading ...");
 	m_goBtn->setVisible(false);
 	m_stopBtn->setVisible(true);
 	m_addressBar->setProgress(0);
 	m_address = m_addressBar->text();
+
+	LineButton *backBtn = static_cast<LineButton*>(m_backBtn);
+	LineButton *fwdBtn = static_cast<LineButton*>(m_forwardBtn);
+	if (backBtn)
+		backBtn->enable(m_webView->history()->canGoBack());
+	if (fwdBtn)
+		fwdBtn->enable(m_webView->history()->canGoForward());
 }
 
 
@@ -155,6 +167,13 @@ void BasicBrowser::loadProgress(int progress) {
    if (progress >= 25)
 	   m_addressBar->setText(m_webView->url().toString());
    m_addressBar->setProgress(progress);
+
+   LineButton *backBtn = static_cast<LineButton*>(m_backBtn);
+   LineButton *fwdBtn = static_cast<LineButton*>(m_forwardBtn);
+   if (backBtn)
+	   backBtn->enable(m_webView->history()->canGoBack());
+   if (fwdBtn)
+	   fwdBtn->enable(m_webView->history()->canGoForward());
 }
 
 
@@ -192,6 +211,13 @@ void BasicBrowser::loadFinished(bool okay) {
 			   "</html>\n").arg(m_address);
 	   m_webView->setHtml(failurePage);
    }
+
+   LineButton *backBtn = static_cast<LineButton*>(m_backBtn);
+   LineButton *fwdBtn = static_cast<LineButton*>(m_forwardBtn);
+   if (backBtn)
+	   backBtn->enable(m_webView->history()->canGoBack());
+   if (fwdBtn)
+	   fwdBtn->enable(m_webView->history()->canGoForward());
    repaint();
 }
 

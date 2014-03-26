@@ -6,7 +6,6 @@
 #include <QNetworkRequest>
 class QWebView;
 class QUrl;
-class ImageButton;
 class AddressBar;
 class QAbstractButton;
 class QHBoxLayout;
@@ -30,11 +29,11 @@ class BasicBrowser : public QMainWindow {
 	Q_OBJECT
 
 	QWebView *m_webView;
-	ImageButton *m_backBtn;
-	ImageButton *m_forwardBtn;
-	ImageButton *m_goBtn;
-	ImageButton *m_stopBtn;
-	ImageButton *m_refreshBtn;
+	QAbstractButton *m_backBtn;
+	QAbstractButton *m_forwardBtn;
+	QAbstractButton *m_goBtn;
+	QAbstractButton *m_stopBtn;
+	QAbstractButton *m_refreshBtn;
 	AddressBar *m_addressBar;
 	QHBoxLayout *m_barLayout;
 	QString m_address;
@@ -49,6 +48,7 @@ public:
 public slots:
 	void go();
 	void stop();
+	void refresh();
 	void loadStarted();
 	void loadFinished(bool okay);
 	void loadProgress(int progress);
