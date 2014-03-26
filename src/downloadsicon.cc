@@ -36,7 +36,7 @@ void DownloadsIcon::paintForeground(QPainter *p) {
 void DownloadsIcon::paintProgressWheel(QPainter *p, qreal size, int progress) {
 	p->save();
 
-	QColor colour(0,255,0,91);
+	QColor colour(0,255,0,120);
 	QRectF rect(0,0, size, size);
 
 	p->setPen(Qt::NoPen);

@@ -9,30 +9,23 @@
 using namespace std;
 
 
-Download::Download(const QUrl &url, QString saveDir, QObject *parent)
+Download::Download(const QUrl &url, QString filename, QObject *parent)
 	: QObject(parent), m_curKbytes(0), m_totalKbytes(-1), m_speedKbps(0)
 {
 	QString path = url.path();
-	m_filename = QFileInfo(path).fileName();
+	m_filename = filename;
+	m_download = 0;
 
-	if (m_filename.isEmpty())
-		m_filename = "download.unknown";
+	if (m_filename.isEmpty()) return;
 
-	// Don't overwrite anything - come up with a unique filename by
-	// appending ".#" to the filename.
-	/*if (QFile::exists(m_filename)) {
-		int i = 0;
-		m_filename += '.';
-		while (QFile::exists(m_filename + QString::number(i))) ++i;
-		m_filename += QString::number(i);
-		}*/
+	m_output.setFileName(m_filename);
 
-	m_output.setFileName(saveDir);// + "/" + m_filename);
 	// Open the output file. If we can't, then throw an exception.
 	if (!m_output.open(QIODevice::WriteOnly)) {
-	   cerr << "Couldn't open " << qPrintable(saveDir) // + "/" + m_filename)
-		<< " - " << qPrintable(m_output.errorString());
-	   throw runtime_error(qPrintable(m_output.errorString()));
+	   cerr << "Couldn't open " << qPrintable(m_filename)
+			<< " - " << qPrintable(m_output.errorString());
+	   return;
+	   //throw runtime_error(qPrintable(m_output.errorString()));
 	}
 
 	// Create the network request.

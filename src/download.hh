@@ -24,7 +24,7 @@ class Download : public QObject
 	QString m_filename;
 
 public:
-	Download(const QUrl &url, QString saveDir, QObject *parent = 0);
+	Download(const QUrl &url, QString filename, QObject *parent = 0);
 
 	bool isStopped() const;
 

@@ -36,7 +36,7 @@ class BasicBrowser : public QMainWindow {
 	QAbstractButton *m_stopBtn;
 	QAbstractButton *m_refreshBtn;
 	QAbstractButton *m_downloadsBtn;
-   	AddressBar *m_addressBar;
+	AddressBar *m_addressBar;
 	QHBoxLayout *m_barLayout;
 	DownloadManager *m_downloadManager;
 	QString m_address;
@@ -52,11 +52,13 @@ public slots:
 	void go();
 	void stop();
 	void refresh();
+	void showDownloads();
 	void loadStarted();
 	void loadFinished(bool okay);
 	void loadProgress(int progress);
 	void download(const QNetworkRequest &);
 	void unsupportedContent(QNetworkReply *);
+	void downloadProgress(int progress);
 
 signals:
 	void downloadRequested(const QUrl& url);

@@ -2,18 +2,13 @@
 #include <stdexcept>
 #include <iostream>
 #include "basicbrowser.hh"
-#include "imagebutton.hh"
-//#include "linebutton.hh"
-//#include "backicon.hh"
-#include "downloadsbutton.hh"
 using namespace std;
 
 
 int main(int argc, char **argv) {
 	try {
 		QApplication app(argc, argv);
-		BasicBrowser *bb = new BasicBrowser(
-					"http://www.google.ca");
+		BasicBrowser *bb = new BasicBrowser("http://www.thinkbroadband.com/download.html");
 		bb->showMaximized();
 		return app.exec();
 	}

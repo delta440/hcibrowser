@@ -12,21 +12,21 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 	QT += webkitwidgets
 } else {
 	QT += webkit
-        QT += network
+		QT += network
 }
 
 # Input
 HEADERS += src/basicbrowser.hh \
-	src/addressbar.hh src/imagebutton.hh src/download.hh \
+	src/addressbar.hh src/download.hh \
 	src/lineicon.hh src/downloadsicon.hh \
 	src/backicon.hh src/fwdicon.hh src/goicon.hh src/stopicon.hh \
-        src/refreshicon.hh \
+		src/refreshicon.hh \
 	src/linebutton.hh src/downloadsbutton.hh \
-        src/downloadmanager.hh src/downloadinfo.hh
+		src/downloadmanager.hh src/downloadinfo.hh
 SOURCES += src/basicbrowser.cc src/main.cc \
-	src/addressbar.cc src/imagebutton.cc src/download.cc \
+	src/addressbar.cc src/download.cc \
 	src/lineicon.cc src/downloadsicon.cc \
 	src/backicon.cc src/fwdicon.cc src/goicon.cc src/stopicon.cc \
-        src/refreshicon.cc \
+		src/refreshicon.cc \
 	src/linebutton.cc src/downloadsbutton.cc \
-        src/downloadmanager.cc src/downloadinfo.cc
+		src/downloadmanager.cc src/downloadinfo.cc
