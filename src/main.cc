@@ -14,8 +14,6 @@ int main(int argc, char **argv) {
 		QApplication app(argc, argv);
 		BasicBrowser *bb = new BasicBrowser(
 					"http://www.google.ca");
-		DownloadsButton *btn = new DownloadsButton(35);
-		bb->addBarButton(btn);
 		bb->showMaximized();
 		return app.exec();
 	}

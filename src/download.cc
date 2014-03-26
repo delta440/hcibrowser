@@ -20,19 +20,19 @@ Download::Download(const QUrl &url, QString saveDir, QObject *parent)
 
 	// Don't overwrite anything - come up with a unique filename by
 	// appending ".#" to the filename.
-	if (QFile::exists(m_filename)) {
+	/*if (QFile::exists(m_filename)) {
 		int i = 0;
 		m_filename += '.';
 		while (QFile::exists(m_filename + QString::number(i))) ++i;
 		m_filename += QString::number(i);
-	}
+		}*/
 
-	m_output.setFileName(saveDir + "/" + m_filename);
+	m_output.setFileName(saveDir);// + "/" + m_filename);
 	// Open the output file. If we can't, then throw an exception.
 	if (!m_output.open(QIODevice::WriteOnly)) {
-		cerr << "Couldn't open " << qPrintable(saveDir + "/" + m_filename)
-			 << " - " << qPrintable(m_output.errorString());
-		throw runtime_error(qPrintable(m_output.errorString()));
+	   cerr << "Couldn't open " << qPrintable(saveDir) // + "/" + m_filename)
+		<< " - " << qPrintable(m_output.errorString());
+	   throw runtime_error(qPrintable(m_output.errorString()));
 	}
 
 	// Create the network request.
@@ -69,9 +69,11 @@ void Download::m_downloadProgress(qint64 recv, qint64 total) {
 	m_curKbytes = (qreal)recv / 1024.0;
 	m_speedKbps = m_curKbytes * 1000.0 / m_time.elapsed();
 	//XXX
-	cout << qPrintable(m_filename) << ": "
+	/*
+	  cout << qPrintable(m_filename) << ": "
 		 << fixed << setprecision(1)
 		 << m_curKbytes << "kb / " << m_totalKbytes << "kb (" << m_speedKbps << "kb/s)\n";
+	*/
 
 	emit progress(m_curKbytes, m_speedKbps);
 }
