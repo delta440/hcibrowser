@@ -11,6 +11,7 @@ class AddressBar;
 class QAbstractButton;
 class QHBoxLayout;
 class QNetworkReply;
+class DownloadManager;
 
 
 /**
@@ -35,8 +36,10 @@ class BasicBrowser : public QMainWindow {
 	ImageButton *m_goBtn;
 	ImageButton *m_stopBtn;
 	ImageButton *m_refreshBtn;
+    ImageButton *m_downloadsBtn;
 	AddressBar *m_addressBar;
 	QHBoxLayout *m_barLayout;
+    DownloadManager *m_downloadManager;
 	QString m_address;
 	bool m_triedGoogle;
 

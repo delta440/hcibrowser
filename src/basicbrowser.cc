@@ -1,6 +1,7 @@
 #include "basicbrowser.hh"
 #include "addressbar.hh"
 #include "imagebutton.hh"
+#include "downloadmanager.hh"
 #include <QWebView>
 #include <QUrl>
 #include <QHBoxLayout>
@@ -39,7 +40,11 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
 	m_refreshBtn = new ImageButton(
 				"resources/reload.png", "resources/reload_h.png",
 				"resources/reload_p.png");
+    m_downloadsBtn = new ImageButton(
+                "resources/downloads.png", "resources/downloads_h.png",
+                "resources/downloads_p.png");
 	m_addressBar = new AddressBar;
+    m_downloadManager = new DownloadManager();
 	m_webView = new QWebView;
 
 	// The address bar needs a bit of tweaking ...
@@ -62,7 +67,7 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
 	m_barLayout->addWidget(m_stopBtn, 0, Qt::AlignVCenter);
 	m_barLayout->addSpacing(5);
 	m_barLayout->addWidget(m_refreshBtn, 0, Qt::AlignRight|Qt::AlignVCenter);
-
+    addBarButton(m_downloadsBtn);
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	mainLayout->setContentsMargins(0,0,0,0);
 	mainLayout->setSpacing(0);
@@ -96,6 +101,9 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
 			this, SLOT(download(QNetworkRequest)));
 	connect(m_webView->page(), SIGNAL(unsupportedContent(QNetworkReply*)),
 			this, SLOT(unsupportedContent(QNetworkReply*)));
+    connect(this, SIGNAL(downloadRequested(QUrl)), m_downloadManager,
+            SLOT(downloadRequested(QUrl)));
+    connect(m_downloadsBtn, SIGNAL(clicked()), m_downloadManager, SLOT(show()));
 
 	// Start loading the default page.
 	m_webView->load(QUrl(startPage));
@@ -201,7 +209,7 @@ void BasicBrowser::download(const QNetworkRequest &r) {
 	stop();
 	emit downloadRequested(r.url());
 	//XXX
-	//new Download(r.url(), "./");
+    //new Download(r.url(), "./");
 }
 
 

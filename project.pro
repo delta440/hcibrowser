@@ -16,6 +16,10 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 
 # Input
 HEADERS += src/basicbrowser.hh \
-	src/addressbar.hh src/imagebutton.hh src/download.hh
+	src/addressbar.hh src/imagebutton.hh src/download.hh \
+    src/downloadmanager.hh \
+    src/downloadinfo.hh
 SOURCES += src/basicbrowser.cc src/main.cc \
-	src/addressbar.cc src/imagebutton.cc src/download.cc
+	src/addressbar.cc src/imagebutton.cc src/download.cc \
+    src/downloadmanager.cc \
+    src/downloadinfo.cc

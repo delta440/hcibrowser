@@ -1,0 +1,15 @@
+INPUT(
+./debug\basicbrowser.o
+./debug\main.o
+./debug\addressbar.o
+./debug\imagebutton.o
+./debug\download.o
+./debug\downloadmanager.o
+./debug\downloadinfo.o
+./debug\moc_basicbrowser.o
+./debug\moc_addressbar.o
+./debug\moc_imagebutton.o
+./debug\moc_download.o
+./debug\moc_downloadmanager.o
+./debug\moc_downloadinfo.o
+);
