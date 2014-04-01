@@ -29,8 +29,8 @@ class DownloadManager;
 class BasicBrowser : public QMainWindow {
 	Q_OBJECT
 
-	QWebView *m_webView;
-	QAbstractButton *m_backBtn;
+    QWebView *m_webView;
+    QAbstractButton *m_backBtn;
 	QAbstractButton *m_forwardBtn;
 	QAbstractButton *m_goBtn;
 	QAbstractButton *m_stopBtn;
