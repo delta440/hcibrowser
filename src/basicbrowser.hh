@@ -12,7 +12,6 @@ class QHBoxLayout;
 class QNetworkReply;
 class DownloadManager;
 
-
 /**
  * @brief The BasicBrowser class
  *
@@ -42,6 +41,7 @@ class BasicBrowser : public QMainWindow {
 	QString m_address;
 	bool m_triedGoogle;
 
+
 public:
 	explicit BasicBrowser(QString startPage, QWidget *parent = 0);
 	virtual ~BasicBrowser();
@@ -62,6 +62,8 @@ public slots:
 
 signals:
 	void downloadRequested(const QUrl& url);
+
+
 };
 
 #endif

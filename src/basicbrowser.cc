@@ -9,6 +9,7 @@
 #include "downloadsbutton.hh"
 #include "downloadmanager.hh"
 
+
 #include <QWebView>
 #include <QUrl>
 #include <QHBoxLayout>
@@ -22,6 +23,7 @@
 #include <QWebHistory>
 #include <iostream>
 #include <cctype>
+
 using namespace std;
 
 
@@ -73,6 +75,7 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
 	QWidget *window = new QWidget;
 	window->setLayout(mainLayout);
 	setCentralWidget(window);
+
 
 	// Connect things together.
 	connect(m_webView, SIGNAL(loadStarted()),
@@ -255,3 +258,5 @@ void BasicBrowser::unsupportedContent(QNetworkReply *r) {
 	stop();
 	emit downloadRequested(r->url());
 }
+
+
