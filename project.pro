@@ -24,7 +24,9 @@ HEADERS += src/basicbrowser.hh \
 	src/linebutton.hh src/downloadsbutton.hh \
 		src/downloadmanager.hh src/downloadinfo.hh \
     src/bubblesoverlay.hh \
-    src/bubblesbrowser.hh
+    src/bubblesbrowser.hh \
+    src/bubble.hh \
+    src/bubbleswebview.hh
 SOURCES += src/basicbrowser.cc src/main.cc \
 	src/addressbar.cc src/download.cc \
 	src/lineicon.cc src/downloadsicon.cc \
@@ -33,4 +35,6 @@ SOURCES += src/basicbrowser.cc src/main.cc \
 	src/linebutton.cc src/downloadsbutton.cc \
 		src/downloadmanager.cc src/downloadinfo.cc \
     src/bubblesbrowser.cc \
-    src/bubblesoverlay.cc
+    src/bubblesoverlay.cc \
+    src/bubble.cc \
+    src/bubbleswebview.cc

@@ -10,7 +10,8 @@ int main(int argc, char **argv) {
 	try {
 		QApplication app(argc, argv);
         //BasicBrowser *bb = new BasicBrowser("http://www.thinkbroadband.com/download.html");
-        BubblesBrowser *bb = new BubblesBrowser("http://www.thinkbroadband.com/download.html");
+        BubblesBrowser *bb = new BubblesBrowser("http://www.thinkbroadband.com/download.html",100000);
+        cout<<bb->height()<<endl;
 		bb->showMaximized();
 		return app.exec();
 	}
