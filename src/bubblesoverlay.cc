@@ -6,6 +6,7 @@
 #include <QStyle>
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 using namespace std;
 
 // This is dirty, but it's good enough for now.
@@ -26,6 +27,7 @@ BubblesOverlay::BubblesOverlay(QWidget *parent)
 
 
 void BubblesOverlay::timeUp() {
+	m_lastUpdateTime += m_timer.interval();
 	for (int i = 0; i < m_bubbles.size(); ++i)
 		m_bubbles[i]->update();
 	update();
@@ -111,9 +113,15 @@ void BubblesOverlay::updateBubbles() {
 			//cout<<"dragging"<<endl; //TC
 			bb->setPos(QPointF(m_mousex - bb->bounds().width()/2,
 							   m_mousey - bb->bounds().height()/2));
+			continue;
 		}
-		// snap to either left or right
-		else if (bb->bounds().x() < width()/2 - bb->bounds().width()/2) {
+
+		// Snap to either left or right. Take speed into account for swipes.
+
+		bool onLeft = bb->bounds().x() < width()/2 - bb->bounds().width()/2;
+		bool useSpeed = fabs(bb->xdisplacement()) >= 5; // pixels/frame threshold
+
+		if ((!useSpeed && onLeft) || (useSpeed && bb->xdisplacement() <= 0)) {
 			left.push_back(bb);
 			leftSize += bb->bounds().height() + 5; // for padding
 		}
@@ -141,6 +149,7 @@ void BubblesOverlay::updateBubbles() {
 		y += size + 5;
 	}
 
+	m_lastUpdateTime = 0;
 	update();
 }
 

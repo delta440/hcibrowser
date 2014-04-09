@@ -34,6 +34,7 @@ private:
 	QRectF m_deleteButton;
 	int m_mousex, m_mousey;
 	QTimer m_timer;
+	qreal m_lastUpdateTime;
 
 	void updateBubbles();
 };

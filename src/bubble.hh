@@ -18,11 +18,15 @@ public:
 
 	// The bounds/position of the bubble.
 	QRectF bounds() const { return m_bounds; }
-	void setPos(QPointF p) { m_bounds.moveTo(p); }
+
+	// Returns the displacement in the x direction over the last two calls
+	// to update(). The value is signed, so negative values are moving left.
+	double xdisplacement() const { return (m_bounds.topLeft() - m_prevPos).x(); }
 
 	// When not clicked, the bubble will try to move towards this point.
 	void setDest(QPointF p) { m_dest = p; }
-
+	// Or you can set the absolute position.
+	void setPos(QPointF p) { m_bounds.moveTo(p); }
 
 	QString name() const { return m_filename; }
 	bool clicked() const { return m_clicked; }
@@ -40,7 +44,7 @@ public:
 	// the value given by bounds().
 	void paint(QPainter *p);
 
-	// Updates the state of the bubble. This should be called somewhat frequently.
+	// Updates the state of the bubble. This should be called roughly 60 times a second.
 	void update();
 
 	//void output() const; //TC
@@ -52,6 +56,7 @@ private:
 	bool m_failed;
 	QRectF m_bounds;
 	QPointF m_dest;
+	QPointF m_prevPos;
 	qreal m_kbytes;
 	qreal m_kbps;
 	QString m_filename;

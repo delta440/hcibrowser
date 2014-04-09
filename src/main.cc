@@ -12,10 +12,13 @@ QApplication *app;
 int main(int argc, char **argv) {
 	try {
 		app = new QApplication(argc, argv);
-		//BasicBrowser *bb = new BasicBrowser("http://www.thinkbroadband.com/download.html");
-		BubblesBrowser *bb = new BubblesBrowser("http://www.thinkbroadband.com/download.html");
-		cout<<bb->height()<<endl;
-		bb->showMaximized();
+		BasicBrowser *bb = 0;
+		if (!USE_BUBBLES)
+			bb = new BasicBrowser("http://www.thinkbroadband.com/download.html");
+		else
+			bb = new BubblesBrowser("http://www.thinkbroadband.com/download.html");
+		//bb->showMaximized();
+		bb->show();
 		return app->exec();
 	}
 	catch (const exception& e) {
