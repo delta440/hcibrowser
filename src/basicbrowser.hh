@@ -4,7 +4,8 @@
 #include <QMainWindow>
 #include <QString>
 #include <QNetworkRequest>
-class QWebView;
+
+class BubblesWebView;
 class QUrl;
 class AddressBar;
 class QAbstractButton;
@@ -28,7 +29,7 @@ class DownloadManager;
 class BasicBrowser : public QMainWindow {
 	Q_OBJECT
 
-	QWebView *m_webView;
+
 	QAbstractButton *m_backBtn;
 	QAbstractButton *m_forwardBtn;
 	QAbstractButton *m_goBtn;
@@ -56,14 +57,15 @@ public slots:
 	void loadStarted();
 	void loadFinished(bool okay);
 	void loadProgress(int progress);
-	void download(const QNetworkRequest &);
-	void unsupportedContent(QNetworkReply *);
+    virtual	void download(const QNetworkRequest &);
+    virtual void unsupportedContent(QNetworkReply *);
 	void downloadProgress(int progress);
 
 signals:
 	void downloadRequested(const QUrl& url);
 
-
+protected:
+    BubblesWebView *m_webView;
 };
 
 #endif

@@ -8,9 +8,8 @@
 #include "refreshicon.hh"
 #include "downloadsbutton.hh"
 #include "downloadmanager.hh"
+#include "bubbleswebview.hh"
 
-
-#include <QWebView>
 #include <QUrl>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -42,7 +41,7 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
 	m_downloadsBtn = new DownloadsButton(35);
 	m_addressBar = new AddressBar;
 	m_downloadManager = new DownloadManager();
-	m_webView = new QWebView;
+    m_webView = new BubblesWebView;
 
 	// The address bar needs a bit of tweaking ...
 	m_addressBar->setMinimumHeight(m_goBtn->height()-2);
@@ -64,7 +63,7 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
 	m_barLayout->addWidget(m_stopBtn, 0, Qt::AlignVCenter);
 	m_barLayout->addSpacing(5);
 	m_barLayout->addWidget(m_refreshBtn, 0, Qt::AlignRight|Qt::AlignVCenter);
-	addBarButton(m_downloadsBtn);
+
 
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	mainLayout->setContentsMargins(0,0,0,0);
@@ -100,8 +99,8 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
 			this, SLOT(download(QNetworkRequest)));
 	connect(m_webView->page(), SIGNAL(unsupportedContent(QNetworkReply*)),
 			this, SLOT(unsupportedContent(QNetworkReply*)));
-	connect(this, SIGNAL(downloadRequested(QUrl)),
-			m_downloadManager, SLOT(downloadRequested(QUrl)));
+    //connect(this, SIGNAL(downloadRequested(QUrl)),
+    //		m_downloadManager, SLOT(downloadRequested(QUrl)));
 	connect(m_downloadsBtn, SIGNAL(clicked()),
 			this, SLOT(showDownloads()));
 	connect(m_downloadManager, SIGNAL(totalProgress(int)),
