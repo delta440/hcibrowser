@@ -1,7 +1,7 @@
 #ifndef DOWNLOADMANAGER_HH
 #define DOWNLOADMANAGER_HH
 
-#include <QWidget>
+#include <QDialog>
 #include "download.hh"
 #include "downloadinfo.hh"
 class QUrl;
@@ -10,7 +10,7 @@ class QLabel;
 class QVBoxLayout;
 
 
-class DownloadManager : public QWidget {
+class DownloadManager : public QDialog {
 	Q_OBJECT
 public:
 	DownloadManager(QWidget *parent = 0);

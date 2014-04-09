@@ -37,6 +37,8 @@ DownloadInfo::DownloadInfo(Download* download, QWidget *parent) : QWidget(parent
 	downloadInfo->addWidget(m_downloadSpeed, 0, Qt::AlignRight);
 
 	QVBoxLayout *layout = new QVBoxLayout();
+	m_filename->setMaximumWidth(350);
+	m_filename->setMinimumWidth(350);
 	layout->addWidget(m_filename);
 	layout->addLayout(downloadInfo);
 

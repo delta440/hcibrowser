@@ -11,9 +11,9 @@
 using std::cout;
 using std::endl;
 
-DownloadManager::DownloadManager(QWidget *parent) : QWidget(parent){
+DownloadManager::DownloadManager(QWidget *parent) : QDialog(parent){
 	setWindowTitle("Download Manager");
-	setMinimumWidth(320);
+	setMinimumWidth(400);
 	//setMinimumHeight(240);
 
 	m_title = new QLabel("Current Downloads:");

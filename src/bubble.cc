@@ -14,7 +14,7 @@ Bubble::Bubble(QUrl url, QWidget *parent): QObject(parent), m_bounds(0,0, 50,50)
 
 	QString path = url.path();
 	QFileDialog dlg(parent, tr("Save File"), QFileInfo(path).fileName());
-	QString fileName = dlg.getSaveFileName(0, tr("Save File"), QFileInfo(path).fileName());
+	QString fileName = dlg.getSaveFileName(parent, tr("Save File"), QFileInfo(path).fileName());
 	if (dlg.Accepted == QDialog::Accepted){
 		cout << "Filename = " << qPrintable(fileName) << endl;
 		m_download = new Download(url, fileName);
@@ -54,6 +54,8 @@ void Bubble::updateProgress(qreal kbytes, qreal kbps){
 }
 
 void Bubble::update() {
+	m_prevPos = m_bounds.topLeft();
+
 	// Move towards our target if we aren't being dragged. The faction is
 	// chosen to get a reasonable speed at 60fps.
 	if (!m_clicked) {

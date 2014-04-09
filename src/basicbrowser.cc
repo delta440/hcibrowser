@@ -20,6 +20,7 @@
 #include <QPixmap>
 #include <QNetworkReply>
 #include <QWebHistory>
+#include <QScroller>
 #include <iostream>
 #include <cctype>
 
@@ -40,8 +41,8 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
 	m_refreshBtn = new LineButton(new RefreshIcon(35));
 	m_downloadsBtn = new DownloadsButton(35);
 	m_addressBar = new AddressBar;
-	m_downloadManager = new DownloadManager();
-    m_webView = new BubblesWebView;
+	m_downloadManager = new DownloadManager(this);
+	m_webView = new BubblesWebView;
 
 	// The address bar needs a bit of tweaking ...
 	m_addressBar->setMinimumHeight(m_goBtn->height()-2);
@@ -99,13 +100,15 @@ BasicBrowser::BasicBrowser(QString startPage, QWidget *parent)
 			this, SLOT(download(QNetworkRequest)));
 	connect(m_webView->page(), SIGNAL(unsupportedContent(QNetworkReply*)),
 			this, SLOT(unsupportedContent(QNetworkReply*)));
-    //connect(this, SIGNAL(downloadRequested(QUrl)),
-    //		m_downloadManager, SLOT(downloadRequested(QUrl)));
-	connect(m_downloadsBtn, SIGNAL(clicked()),
-			this, SLOT(showDownloads()));
-	connect(m_downloadManager, SIGNAL(totalProgress(int)),
-			this, SLOT(downloadProgress(int)));
-	//XXX add connection from downloadManager to downloadsbtn.progress()
+	if (!USE_BUBBLES) {
+		connect(this, SIGNAL(downloadRequested(QUrl)),
+				m_downloadManager, SLOT(downloadRequested(QUrl)));
+		connect(m_downloadsBtn, SIGNAL(clicked()),
+				this, SLOT(showDownloads()));
+		connect(m_downloadManager, SIGNAL(totalProgress(int)),
+				this, SLOT(downloadProgress(int)));
+		addBarButton(m_downloadsBtn);
+	}
 
 	// Start loading the default page.
 	m_webView->load(QUrl(startPage));
@@ -160,6 +163,7 @@ void BasicBrowser::refresh() {
 void BasicBrowser::showDownloads() {
 	m_downloadManager->show();
 	m_downloadManager->raise();
+	m_downloadManager->setFocus();
 }
 
 

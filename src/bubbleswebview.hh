@@ -2,6 +2,8 @@
 #define BUBBLESWEBVIEW_HH
 
 #include <QWebView>
+#include <QTimer>
+
 
 class BubblesWebView : public QWebView
 {
@@ -17,6 +19,15 @@ protected:
 	void mousePressEvent(QMouseEvent *event);
 	void mouseReleaseEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
+	bool eventFilter(QObject*, QEvent *e);
+
+private slots:
+	//void timeUp();
+
+private:
+	bool m_mousePressed;
+	QTimer m_timer;
+	QPointF m_prevMouse;
 };
 
 #endif // BUBBLESWEBVIEW_HH
