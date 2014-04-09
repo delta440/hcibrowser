@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QColor>
 class QPainter;
+class QImage;
 
 
 class LineIcon : public QObject {
@@ -12,8 +13,8 @@ public:
 	LineIcon(int width, int height, int thickness, QObject *parent = 0);
 	virtual ~LineIcon() { }
 
-	virtual void paintBackground(QPainter *p);
-	virtual void paintForeground(QPainter *p) = 0;
+	void paintBackground(QPainter *p);
+	void paintForeground(QPainter *p);
 
 	bool enabled() const { return m_enabled; }
 	int width() const { return m_width; }
@@ -26,9 +27,20 @@ public:
 	}
 
 public slots:
-	void enable(bool yes) { m_enabled = yes; }
-	void hover(bool yes) { m_hovering = yes; }
-	void select(bool yes) { m_selected = yes; }
+	void enable(bool yes) { m_enabled = yes; setDirty(); }
+	void hover(bool yes) { m_hovering = yes; setDirty(); }
+	void select(bool yes) { m_selected = yes; setDirty(); }
+
+	// In case you do something weird and need to force the icon to
+	// repaint ...
+	void setDirty() { m_bgdirty = m_fgdirty = true; }
+
+protected:
+	/**
+	 * Subclasses need to implement this. It will only be called when the
+	 * icon changes state and needs to be redrawn.
+	 */
+	virtual void paintForegroundImp(QPainter *p) = 0;
 
 private:
 	bool m_enabled;
@@ -37,6 +49,10 @@ private:
 	int m_width;
 	int m_height;
 	int m_thickness;
+	bool m_bgdirty;
+	bool m_fgdirty;
+	QImage *m_bgimage;
+	QImage *m_fgimage;
 };
 
 #endif // LINEICON_HH

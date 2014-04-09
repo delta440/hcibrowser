@@ -7,7 +7,7 @@ GoIcon::GoIcon(int height, QObject *parent)
 	: LineIcon(height, height, height/6, parent)
 { }
 
-void GoIcon::paintForeground(QPainter *p) {
+void GoIcon::paintForegroundImp(QPainter *p) {
 	QPen pen;
 	pen.setColor(foregroundColor());
 	pen.setWidth(thickness());

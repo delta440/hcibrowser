@@ -8,7 +8,8 @@ class RefreshIcon : public LineIcon {
 	Q_OBJECT
 public:
 	RefreshIcon(int height, QObject *parent = 0);
-	virtual void paintForeground(QPainter *p);
+protected:
+	virtual void paintForegroundImp(QPainter *p);
 };
 
 #endif // REFRESHICON_HH

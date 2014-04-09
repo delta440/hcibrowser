@@ -7,7 +7,7 @@ FwdIcon::FwdIcon(int height, QObject *parent)
 	: LineIcon(1.1*height, height, height/6, parent)
 { }
 
-void FwdIcon::paintForeground(QPainter *p) {
+void FwdIcon::paintForegroundImp(QPainter *p) {
 	QPen pen;
 	pen.setColor(foregroundColor());
 	pen.setWidth(thickness());

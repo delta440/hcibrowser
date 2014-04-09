@@ -7,7 +7,7 @@ BackIcon::BackIcon(int height, QObject *parent)
 	: LineIcon(1.1*height, height, height/6, parent)
 { }
 
-void BackIcon::paintForeground(QPainter *p) {
+void BackIcon::paintForegroundImp(QPainter *p) {
 	QPen pen;
 	pen.setColor(foregroundColor());
 	pen.setWidth(thickness());
