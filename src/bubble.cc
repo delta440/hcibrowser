@@ -53,6 +53,17 @@ void Bubble::updateProgress(qreal kbytes, qreal kbps){
 	//output(); //TC
 }
 
+void Bubble::update() {
+	// Move towards our target if we aren't being dragged. The faction is
+	// chosen to get a reasonable speed at 60fps.
+	if (!m_clicked) {
+		QPointF next = 0.8 * (m_bounds.topLeft() - m_dest);
+		m_bounds.moveTo(next + m_dest);
+		// If we're close enough, then just snap to the destination.
+		if (next.manhattanLength() < 0.1) m_bounds.moveTo(m_dest);
+	}
+}
+
 
 void Bubble::finished(bool okay){
 	if (okay) m_finised = 1;
@@ -72,13 +83,4 @@ void Bubble::paint(QPainter *p) {
 	// TODO - draw the name/speed if we're being clicked???
 
 	p->restore();
-
-	// Move towards our target if we aren't being dragged.
-	//XXX this should be done somewhere else ...
-	if (!m_clicked) {
-		QPointF next = 0.5 * (m_bounds.topLeft() - m_dest);
-		m_bounds.moveTo(next + m_dest);
-		// If we're close enough, then just snap to the destination.
-		if (next.manhattanLength() < 0.1) m_bounds.moveTo(m_dest);
-	}
 }

@@ -6,6 +6,7 @@
 #include <QMouseEvent>
 #include <QWidget>
 #include <QVector>
+#include <QTimer>
 #include <iostream>//TC
 using namespace std;//TC
 
@@ -25,10 +26,14 @@ protected:
 	void paintEvent(QPaintEvent *event);
 	void resizeEvent(QResizeEvent *event);
 
+private slots:
+	void timeUp();
+
 private:
 	QVector<Bubble*> m_bubbles;
 	QRectF m_deleteButton;
 	int m_mousex, m_mousey;
+	QTimer m_timer;
 
 	void updateBubbles();
 };

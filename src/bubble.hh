@@ -40,6 +40,9 @@ public:
 	// the value given by bounds().
 	void paint(QPainter *p);
 
+	// Updates the state of the bubble. This should be called somewhat frequently.
+	void update();
+
 	//void output() const; //TC
 
 private:

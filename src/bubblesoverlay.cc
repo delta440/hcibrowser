@@ -17,7 +17,18 @@ BubblesOverlay::BubblesOverlay(QWidget *parent)
 {
 	setPalette(Qt::transparent);
 	setAttribute(Qt::WA_TransparentForMouseEvents);
+	connect(&m_timer, SIGNAL(timeout()), this, SLOT(timeUp()));
+	m_timer.setInterval(16); // roughly 60fps
+	m_timer.start();
+
 	// See resizeEvent() for the positioning of m_deleteButton.
+}
+
+
+void BubblesOverlay::timeUp() {
+	for (int i = 0; i < m_bubbles.size(); ++i)
+		m_bubbles[i]->update();
+	update();
 }
 
 
