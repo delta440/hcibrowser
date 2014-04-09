@@ -94,8 +94,6 @@ static bool sortComp(Bubble *a, Bubble *b) {
 }
 
 void BubblesOverlay::updateBubbles() {
-	//cout<<"made to update"<<endl;
-
 	/* The approach here is not too difficult, and avoids any wierd collision math.
 	 * First, if a bubble is being dragged, then just keep dragging it, otherwise
 	 * find the side it is closest to and add it to the appropriate "snap" list.
@@ -204,13 +202,6 @@ void BubblesOverlay::paintEvent(QPaintEvent *){
 
 		wthick.setColor(Qt::white);
 		painter.setPen(wthick);
-
-		/* TODO
-		painter.drawLine(QPoint((-(BSIZE/2.0)) + (BSIZE/4.0),(WSIZE/2.0) - BSIZE + (BSIZE/4.0)),
-						 QPoint((BSIZE/2.0) - (BSIZE/4),(WSIZE/2) - (BSIZE/4.0)));
-		painter.drawLine(QPoint(((BSIZE/2.0)) - (BSIZE/4.0),(WSIZE/2.0) - BSIZE + (BSIZE/4.0)),
-						 QPoint(-(BSIZE/2.0) + (BSIZE/4.0),(WSIZE/2.0) - (BSIZE/4.0)));
-		*/
 	}
 
 	for(QVector<Bubble*>::size_type i = 0; i < m_bubbles.size(); i++)

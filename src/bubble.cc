@@ -79,8 +79,22 @@ void Bubble::paint(QPainter *p) {
 
 	p->setPen(QPen(Qt::blue));
 	p->setBrush(QBrush(Qt::white));
-	p->drawRoundedRect(m_bounds, 15, 15);
-	p->translate(m_bounds.topLeft());
+
+
+    p->setPen(QPen(Qt::black));
+    QStringList parts = m_filename.split("/");
+    QString dName = parts.value(parts.length() - 1);
+    if(clicked()){
+        QRectF m_wideBounds(QRectF(m_bounds.right() - m_bounds.width()*3, m_bounds.top(), m_bounds.width()*3, m_bounds.height()));
+        p->drawRoundedRect(m_wideBounds, 15, 15);
+        p->drawText(m_wideBounds.left() + 2, m_wideBounds.top() + 20, dName);
+        p->drawText(m_wideBounds.left() + 2, m_wideBounds.top() + m_wideBounds.height()/2 + 10, QString("Speed: %1kbps").arg(m_kbps) );
+    }
+    else{
+        p->drawRoundedRect(m_bounds, 15, 15);
+        p->drawText(QRect(m_bounds.left() + 2, m_bounds.top() + m_bounds.height()/2 -5,m_bounds.width(), 15), dName);
+    }
+    p->translate(m_bounds.topLeft());
 	DownloadsIcon::paintProgressWheel(p, m_bounds.width(), progress());
 	// TODO - draw the name/speed if we're being clicked???
 
