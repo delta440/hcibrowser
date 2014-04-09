@@ -5,18 +5,18 @@
 
 class BubblesWebView : public QWebView
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit BubblesWebView(QWidget *parent = 0);
+	explicit BubblesWebView(QWidget *parent = 0);
 
 signals:
-    void mousePEvent(QMouseEvent * event);
-    void mouseMEvent(QMouseEvent * event);
-    void mouseREvent(QMouseEvent * event);
+	void mousePEvent(QMouseEvent * event);
+	void mouseMEvent(QMouseEvent * event);
+	void mouseREvent(QMouseEvent * event);
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+	void mousePressEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
+	void mouseMoveEvent(QMouseEvent *event);
 };
 
 #endif // BUBBLESWEBVIEW_HH

@@ -54,6 +54,7 @@ bool Download::isStopped() const {
 void Download::stop() {
 	if (m_download)
 		m_download->abort();
+	m_output.remove();
 }
 
 
