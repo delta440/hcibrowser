@@ -104,8 +104,6 @@ static bool sortComp(Bubble *a, Bubble *b) {
 }
 
 void BubblesOverlay::updateBubbles() {
-	//cout<<"made to update"<<endl;
-
 	/* The approach here is not too difficult, and avoids any wierd collision math.
 	 * First, if a bubble is being dragged, then just keep dragging it, otherwise
 	 * find the side it is closest to and add it to the appropriate "snap" list.
@@ -165,6 +163,12 @@ void BubblesOverlay::updateBubbles() {
 
 void BubblesOverlay::downloadRequested(const QUrl &url) {
 	m_bubbles.push_front(new Bubble(url, this));
+	if (m_bubbles.front()->failed()) {
+		delete m_bubbles.front();
+		m_bubbles.pop_front();
+		return;
+	}
+
 	connect(m_bubbles.front(), SIGNAL(changed()), this, SLOT(update()));
 
 	updateBubbles();

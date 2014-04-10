@@ -15,11 +15,12 @@ Bubble::Bubble(QUrl url, QWidget *parent)
 	m_finised = 0;
 	m_failed = 0;
 	m_clicked = 0;
+	m_kbps = 0;
+	m_download = 0;
 
 	QString path = url.path();
-	QFileDialog dlg(parent, tr("Save File"), QFileInfo(path).fileName());
-	QString fileName = dlg.getSaveFileName(parent, tr("Save File"), QFileInfo(path).fileName());
-	if (dlg.Accepted == QDialog::Accepted){
+	QString fileName = QFileDialog::getSaveFileName(parent, tr("Save File"), QFileInfo(path).fileName());
+	if (fileName.size() != 0){
 		cout << "Filename = " << qPrintable(fileName) << endl;
 		m_download = new Download(url, fileName);
 		m_filename = fileName;
@@ -34,8 +35,10 @@ Bubble::Bubble(QUrl url, QWidget *parent)
 
 
 Bubble::~Bubble(){
-	m_download->stop();
-	delete m_download;
+	if (m_download) {
+		m_download->stop();
+		delete m_download;
+	}
 }
 
 /*
@@ -91,7 +94,7 @@ void Bubble::finished(bool okay){
 
 void Bubble::paint(QPainter *painter) {
 	if (!m_image) {
-		m_image = new QImage(m_bounds.width(), m_bounds.height(),
+		m_image = new QImage(m_bounds.width()*3, m_bounds.height(),
 							 QImage::Format_ARGB32_Premultiplied);
 		m_dirty = true;
 	}
@@ -102,18 +105,58 @@ void Bubble::paint(QPainter *painter) {
 		QPainter p(m_image);
 		p.setBackgroundMode(Qt::TransparentMode);
 		p.setRenderHint(QPainter::Antialiasing);
-		p.setPen(QPen(Qt::blue));
 		p.setBrush(QBrush(Qt::white));
 
-		p.drawRoundedRect(2, 2,
-						  m_bounds.width()-4, m_bounds.height()-4,
-						  15, 15);
-		p.translate(4, 4);
+		QStringList parts = m_filename.split("/");
+		QString dName = parts.value(parts.length() - 1);
+		if(clicked()) {
+			QRectF m_wideBounds(QRectF(2,2,
+									   m_bounds.width()*3-4,
+									   m_bounds.height()-4));
+
+			// Draw the white background, and a soft shadow of the original
+			// bubble.
+			p.setPen(QPen(Qt::lightGray));
+			p.setBrush(QBrush(Qt::white));
+			p.drawRoundedRect(m_wideBounds, 15, 15);
+			p.setBrush(QBrush(Qt::transparent));
+			p.drawRoundedRect(m_bounds.width()*2+2, 2,
+							  m_bounds.width()-4, m_bounds.height()-4,
+							  15, 15);
+
+			// Then draw the full width bubble with the text.
+			p.setPen(QPen(Qt::blue));
+			p.setBrush(QBrush(Qt::transparent));
+			p.drawRoundedRect(m_wideBounds, 15, 15);
+			p.drawText(m_wideBounds.left() + 2, m_wideBounds.top() + 20, dName);
+
+			QString speed;
+			if (m_kbps < 1024)
+				speed = QString("Speed: %1kpbs").arg(m_kbps, 0, 'f', 1);
+			else
+				speed = QString("Speed: %1Mbps").arg(m_kbps/1024, 0, 'f', 1);
+
+			p.drawText(m_wideBounds.left() + 2,
+					   m_wideBounds.top() + m_wideBounds.height()/2 + 10,
+					   speed);
+		}
+		else {
+			p.setPen(QPen(Qt::blue));
+			p.setBrush(QBrush(Qt::white));
+			p.drawRoundedRect(m_bounds.width()*2+2, 2,
+							  m_bounds.width()-4, m_bounds.height()-4,
+							  15, 15);
+			p.drawText(QRect(m_bounds.width()*2+4, m_bounds.height()/2 - 7, m_bounds.width()-8, 15), dName);
+		}
+
+		p.translate(4 + m_bounds.width()*2, 4);
 		DownloadsIcon::paintProgressWheel(&p, m_bounds.width()-8, progress());
 
 		m_dirty = false;
 	}
 
 	//painter->setBackgroundMode(Qt::TransparentMode);
-	painter->drawImage(m_bounds.topLeft(), *m_image);
+	painter->drawImage(m_bounds.x() - 2*m_bounds.width(),
+					   m_bounds.y(),
+					   *m_image);
 }

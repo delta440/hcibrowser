@@ -36,11 +36,11 @@ public:
 
 	// Returns the progress of the download, in the range 0-100.
 	qreal progress() const {
-		if (!m_download->totalKbytes()) return 0;
+		if (m_failed || !m_download->totalKbytes()) return 0;
 		return m_kbytes/m_download->totalKbytes() * 100.0;
 	}
 
-	void setClicked(bool clicked) { m_clicked = clicked;}
+	void setClicked(bool clicked) { m_clicked = clicked; m_dirty = true; }
 
 	// Paints the bubble using the given painter. It will be translated using
 	// the value given by bounds().
