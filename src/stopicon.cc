@@ -7,7 +7,7 @@ StopIcon::StopIcon(int height, QObject *parent)
 	: LineIcon(height, height, height/6, parent)
 { }
 
-void StopIcon::paintForeground(QPainter *p) {
+void StopIcon::paintForegroundImp(QPainter *p) {
 	QPen pen;
 	pen.setColor(foregroundColor());
 	pen.setWidth(thickness());

@@ -3,12 +3,11 @@
 
 #include "bubble.hh"
 
-#include <QMouseEvent>
 #include <QWidget>
 #include <QVector>
 #include <QTimer>
-#include <iostream>//TC
-using namespace std;//TC
+class QImage;
+
 
 class BubblesOverlay : public QWidget
 {
@@ -35,6 +34,8 @@ private:
 	int m_mousex, m_mousey;
 	QTimer m_timer;
 	qreal m_lastUpdateTime;
+	QImage *m_deleteImage0;
+	QImage *m_deleteImage1;
 
 	void updateBubbles();
 };

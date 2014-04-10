@@ -7,7 +7,7 @@ RefreshIcon::RefreshIcon(int height, QObject *parent)
 	: LineIcon(height, height, height/6, parent)
 { }
 
-void RefreshIcon::paintForeground(QPainter *p) {
+void RefreshIcon::paintForegroundImp(QPainter *p) {
 	QPen pen;
 	pen.setColor(foregroundColor());
 	pen.setWidth(thickness());

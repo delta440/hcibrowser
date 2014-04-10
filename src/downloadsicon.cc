@@ -7,7 +7,7 @@ DownloadsIcon::DownloadsIcon(int height, QObject *parent)
 	: LineIcon(height, height, height/6, parent)
 { }
 
-void DownloadsIcon::paintForeground(QPainter *p) {
+void DownloadsIcon::paintForegroundImp(QPainter *p) {
 	p->save();
 
 	QPen pen;

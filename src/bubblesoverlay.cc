@@ -4,6 +4,8 @@
 #include <QPen>
 #include <QApplication>
 #include <QStyle>
+#include <QMouseEvent>
+#include <QImage>
 #include <iostream>
 #include <algorithm>
 #include <cmath>
@@ -14,7 +16,8 @@ extern QApplication *app;
 
 
 BubblesOverlay::BubblesOverlay(QWidget *parent)
-	: QWidget(parent), m_deleteButton(0,0,150,150)
+	: QWidget(parent), m_deleteButton(0,0,150,150),
+	  m_deleteImage0(0), m_deleteImage1(0)
 {
 	setPalette(Qt::transparent);
 	setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -28,9 +31,13 @@ BubblesOverlay::BubblesOverlay(QWidget *parent)
 
 void BubblesOverlay::timeUp() {
 	m_lastUpdateTime += m_timer.interval();
+
+	bool needRepaint = false;
 	for (int i = 0; i < m_bubbles.size(); ++i)
-		m_bubbles[i]->update();
-	update();
+		if (m_bubbles[i]->update())
+			needRepaint = true;
+
+	if (needRepaint) update();
 }
 
 
@@ -45,6 +52,7 @@ void BubblesOverlay::mouseMEvent(QMouseEvent * event) {
 		}
 	if (!accepted) event->ignore();
 	else event->accept();
+	update();
 }
 
 
@@ -64,6 +72,7 @@ void BubblesOverlay::mousePEvent(QMouseEvent * event) {
 		else event->ignore();
 		updateBubbles();
 	}
+	update();
 }
 
 
@@ -85,6 +94,7 @@ void BubblesOverlay::mouseREvent(QMouseEvent *event) {
 		updateBubbles();
 	}
 	event->ignore();
+	update();
 }
 
 
@@ -148,15 +158,21 @@ void BubblesOverlay::updateBubbles() {
 	}
 
 	m_lastUpdateTime = 0;
-	update();
 }
 
 
 void BubblesOverlay::downloadRequested(const QUrl &url) {
 	m_bubbles.push_front(new Bubble(url, this));
+	if (m_bubbles.front()->failed()) {
+		delete m_bubbles.front();
+		m_bubbles.pop_front();
+		return;
+	}
+
 	connect(m_bubbles.front(), SIGNAL(changed()), this, SLOT(update()));
 
 	updateBubbles();
+	repaint();
 }
 
 
@@ -175,8 +191,7 @@ void BubblesOverlay::resizeEvent(QResizeEvent *event) {
 void BubblesOverlay::paintEvent(QPaintEvent *){
 	//setup
 	QPainter painter(this);
-	painter.setRenderHint(QPainter::Antialiasing);
-	painter.setPen(Qt::green);
+	//painter.setBackgroundMode(Qt::TransparentMode);
 
 	//if a bubble is clicked
 	int dragging = -1;
@@ -185,23 +200,64 @@ void BubblesOverlay::paintEvent(QPaintEvent *){
 			dragging = i;
 
 	//draw the delete button
-	if(dragging >= 0){
-		QPen wthick;
-		wthick.setColor(Qt::red);
-		if (m_deleteButton.contains(m_bubbles[dragging]->bounds()))
-			wthick.setWidth(4);
-		else
+	if(dragging >= 0) {
+		// Only compute this once, for speed.
+		if (!m_deleteImage0) {
+			m_deleteImage0 = new QImage(m_deleteButton.width(),
+										m_deleteButton.height(),
+										QImage::Format_ARGB32_Premultiplied);
+			m_deleteImage1 = new QImage(m_deleteButton.width(),
+										m_deleteButton.height(),
+										QImage::Format_ARGB32_Premultiplied);
+			m_deleteImage0->fill(Qt::transparent);
+			m_deleteImage1->fill(Qt::transparent);
+
+			QPainter p0(m_deleteImage0), p1(m_deleteImage1);
+			p0.setRenderHint(QPainter::Antialiasing);
+			p1.setRenderHint(QPainter::Antialiasing);
+			p0.setBackgroundMode(Qt::TransparentMode);
+			p1.setBackgroundMode(Qt::TransparentMode);
+
+			QPen wthick;
+			wthick.setColor(Qt::red);
+			// Draw the bounding boxes. 5 pixel padding is added just in case.
 			wthick.setWidth(1);
-		painter.setPen(wthick);
-		painter.drawRoundedRect(m_deleteButton, 15, 15);
+			p0.setPen(wthick);
+			p0.drawRoundedRect(5, 5,
+							   m_deleteButton.width()-10, m_deleteButton.height()-10,
+							   15, 15);
+			wthick.setWidth(4);
+			p1.setPen(wthick);
+			p1.drawRoundedRect(5, 5,
+							   m_deleteButton.width()-10, m_deleteButton.height()-10,
+							   15, 15);
+			// Draw the delete icon.
+			p0.setPen(wthick);
+			p1.setPen(wthick);
+			p0.setBrush(QBrush(Qt::red));
+			p1.setBrush(QBrush(Qt::red));
+			p0.drawEllipse(m_deleteButton.width()/2-12.5,
+						   m_deleteButton.height()/2-12.5,
+						   25, 25);
+			p1.drawEllipse(m_deleteButton.width()/2-12.5,
+						   m_deleteButton.height()/2-12.5,
+						   25, 25);
 
-		wthick.setWidth(4);
-		painter.setPen(wthick);
-		painter.setBrush(QBrush(Qt::red));
-		painter.drawEllipse(m_deleteButton.center(), 25, 25);
+			/* TODO???
+			wthick.setColor(Qt::white);
+			btnPainter.setPen(wthick);
+			painter.drawLine(QPoint((-(BSIZE/2.0)) + (BSIZE/4.0),(WSIZE/2.0) - BSIZE + (BSIZE/4.0)),
+							 QPoint((BSIZE/2.0) - (BSIZE/4),(WSIZE/2) - (BSIZE/4.0)));
+			painter.drawLine(QPoint(((BSIZE/2.0)) - (BSIZE/4.0),(WSIZE/2.0) - BSIZE + (BSIZE/4.0)),
+							 QPoint(-(BSIZE/2.0) + (BSIZE/4.0),(WSIZE/2.0) - (BSIZE/4.0)));
+			*/
+		}
 
-		wthick.setColor(Qt::white);
-		painter.setPen(wthick);
+		// Draw the appropriate image.
+		if (m_deleteButton.contains(m_bubbles[dragging]->bounds()))
+			painter.drawImage(m_deleteButton.topLeft(), *m_deleteImage1);
+		else
+			painter.drawImage(m_deleteButton.topLeft(), *m_deleteImage0);
 	}
 
 	for(QVector<Bubble*>::size_type i = 0; i < m_bubbles.size(); i++)

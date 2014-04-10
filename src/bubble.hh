@@ -5,7 +5,9 @@
 
 #include <QString>
 #include <QObject>
-#include <QPainter>
+#include <QRectF>
+class QImage;
+class QPainter;
 
 
 class Bubble : public QObject {
@@ -34,18 +36,19 @@ public:
 
 	// Returns the progress of the download, in the range 0-100.
 	qreal progress() const {
-		if (!m_download->totalKbytes()) return 0;
+		if (m_failed || !m_download->totalKbytes()) return 0;
 		return m_kbytes/m_download->totalKbytes() * 100.0;
 	}
 
-	void setClicked(bool clicked) { m_clicked = clicked;}
+	void setClicked(bool clicked) { m_clicked = clicked; m_dirty = true; }
 
 	// Paints the bubble using the given painter. It will be translated using
 	// the value given by bounds().
 	void paint(QPainter *p);
 
-	// Updates the state of the bubble. This should be called roughly 60 times a second.
-	void update();
+	// Updates the state of the bubble. This should be called roughly
+	// 60 times a second. If a repaint is needed, this will return true.
+	bool update();
 
 	//void output() const; //TC
 
@@ -59,7 +62,10 @@ private:
 	QPointF m_prevPos;
 	qreal m_kbytes;
 	qreal m_kbps;
+	int m_prevProgress;
 	QString m_filename;
+	QImage *m_image;
+	bool m_dirty;
 
 private slots:
 	void updateProgress(qreal kbytes, qreal kbps);

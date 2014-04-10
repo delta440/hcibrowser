@@ -8,7 +8,8 @@ class GoIcon : public LineIcon {
 	Q_OBJECT
 public:
 	GoIcon(int height, QObject *parent = 0);
-	virtual void paintForeground(QPainter *p);
+protected:
+	virtual void paintForegroundImp(QPainter *p);
 };
 
 #endif // GOICON_HH
